@@ -109,40 +109,6 @@ end
       end
     end
 
-    mode 'client' do
-
-      option :address do
-        argument_required
-        required
-        cast :string
-        defaults '127.0.0.1'
-        description 'Chain reactor server address'
-      end
-        
-      option :port do
-        argument_required
-        required
-        cast :int
-        defaults 20000
-        description 'Chain reactor server port number'
-      end
-
-      params[:chainfile].ignore!
-      params[:multithreaded].ignore!
-      params[:silent].ignore!
-      params[:log_file].ignore!
-      params[:debug].ignore!
-
-      output :chainfile do
-        description 'An output file location for the template'
-      end
-
-      def run
-        require 'client'
-        cli = Client.new params[:address].value, params[:port].value
-        cli.send({:hello => 'world'})
-      end
-    end
   end
 
 end

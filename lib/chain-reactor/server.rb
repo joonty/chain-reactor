@@ -46,13 +46,15 @@ module ChainReactor
 
     def handle_sock(client_sock)
       begin
-        client = Client.new(client_sock,@log)
+        client = ClientConnection.new(client_sock,@log)
         handle_client(client)
-      rescue ClientError => e
-        @log.warn { "Client error: #{e.message}" }
+      rescue ClientConnectionError => e
+        @log.error { "Client error: #{e.message}" }
         client.close
       rescue ParseError => e
-        @log.warn { "Parser error: #{e.message}" }
+        @log.error { "Parser error: #{e.message}" }
+      rescue RequiredKeyError => e
+        @log.error { "Client data invalid: #{e.message}" }
       end
     end
 

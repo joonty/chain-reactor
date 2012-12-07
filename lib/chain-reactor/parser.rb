@@ -36,7 +36,7 @@ module ChainReactor
           data = Hash[data.map { |k,v| [k.to_sym, v] }]
         end
         required_keys.each do |key|
-          data.has_key? key or raise RequiredKeyError, "Required key #{key} is missing from data #{data}"
+          data.has_key? key or raise RequiredKeyError, "Required key '#{key}' is missing from data #{data}"
         end
         data
       end
