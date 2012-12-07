@@ -4,3 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'json'
+gem 'mocha'
+gem 'daemons'
+gem 'log4r'

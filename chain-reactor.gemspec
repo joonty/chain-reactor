@@ -5,7 +5,7 @@ require 'chain-reactor/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "chain-reactor"
-  gem.version       = Chain::Reactor::VERSION
+  gem.version       = ChainReactor::VERSION
   gem.authors       = ["Jon Cairns"]
   gem.email         = ["jon@joncairns.com"]
   gem.description   = %q{Trigger events across networks using TCP/IP sockets}

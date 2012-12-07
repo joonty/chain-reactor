@@ -2,7 +2,7 @@ module ChainReactor
 
   require 'socket'
   require 'parser'
-  require 'client'
+  require 'client-connection'
 
   # Creates a server socket and listens for client connections on an infinite
   # loop. Each connecting client creates a new thread, allowing multiple
@@ -10,82 +10,80 @@ module ChainReactor
   class Server
     
     # Create a new <tt>TCPServer</tt> listening on the given port.
-    def initialize
-      @server = TCPServer.open(Conf.bind_address,Conf.port)
-      puts "Starting the ChainReaction v#{VERSION} server"
-      Thread.abort_on_exception = true
+    def initialize(address,port,reactor,logger)
+      @server = TCPServer.open(address,port)
+      @reactor = reactor
+      @log = logger
+      @log.info { "Starting ChainReactor v#{VERSION} server on #{address}:#{port.to_s}" }
     end
 
     # Start the server listening on an infinite loop.
     #
     # When clients connect, a new thread is created. Keyboard interrupts are
     # caught and handled gracefully.
-    def start
+    def start(multithreaded)
+      if multithreaded
+        Thread.abort_on_exception = true
+        @log.info "Accepting concurrent connections with new threads"
+      end
       begin
         loop do
-          Thread.new(@server.accept) do |client_sock|
-            begin
-              client = Client.new(client_sock)
-              handle_client(client)
-            rescue ClientError => e
-              puts e.message
-              client.close
-            rescue Reactions::ReactionError => e
-              puts e.message
-            rescue ParseError => e
-              puts e.message
+          if multithreaded
+            Thread.new(@server.accept) do |client_sock|
+              handle_sock(client_sock)
             end
+          else
+            handle_sock(@server.accept)
           end
         end
       rescue Interrupt, SystemExit
-        puts "Shutting down the ChainReaction server"
+        @log.info "Shutting down the ChainReactor server"
         raise SystemExit
       end
     end
 
     private
 
+    def handle_sock(client_sock)
+      begin
+        client = Client.new(client_sock,@log)
+        handle_client(client)
+      rescue ClientError => e
+        @log.warn { "Client error: #{e.message}" }
+        client.close
+      rescue ParseError => e
+        @log.warn { "Parser error: #{e.message}" }
+      end
+    end
+
     # Handle a single client connection. First, the IP address  is checked to 
     # see whether it's allowed to connect. Then the server sends a welcome 
     # message so the client knows what it's connected to. Finally,
     # data is read from the client and turned into a command.
     def handle_client(client)
-      conf = get_client_conf(client)
-      puts "Connected to client #{client.ip}"
+      @log.info { "Connected to client #{client.ip}" }
+
+      unless @reactor.address_allowed? client.ip
+        client.close
+        @log.warn { "Terminated connection from unauthorized client #{client.ip}" }
+        return
+      end
+
       client.say("ChainReactor v#{VERSION}")
 
       client_string = ''
       while l = client.read
         client_string += l
       end
-      puts "Read from client: #{client_string}"
+
+      @log.debug { "Read from client #{client.ip}: #{client_string}" }
+      @log.info { "Finished reading from client #{client.ip}, closing connection" }
 
       client.close
 
-      conf['parser'] ||= 'json'
-      parser = Parser.get(conf['parser'],client)
-      cause = parser.parse(client_string)
+      @reactor.react(client.ip,client_string)
 
-      Reactions::ReactionList.exec(conf['reaction'],cause)
     end
-
-    # Try and get the configuration data for the given client. If the IP
-    # address has not been allowed then a <tt>ClientError</tt> is thrown,
-    # which closes the connection.
-    def get_client_conf(client)
-      ret_conf = nil
-      Conf.clients.each do |conf|
-        if conf['ip'] == client.ip
-          ret_conf = conf
-          break
-        end
-      end
-      if not ret_conf
-        raise ClientError, "Client with IP address #{client.ip} is not allowed"
-      end
-      ret_conf
-    end
-
   end
 
 end

@@ -1,44 +1,33 @@
+require 'socket'
+require 'json'
+
 module ChainReactor
+  # A client for connecting to a chain reactor server.
+  class Clientclass
 
-  # Exception used by the Client class, signifying incorrect connection
-  # details for a client.
-  class ClientError < StandardError
-  end
-
-  # Holds information about the connected client, and provides access to the
-  # socket.
-  #
-  # The host, ip and port of the client are provided as attributes.
-  class Client
-    # Allow read access
-    attr_reader :ip, :port
-
-    # Create the Client with a TCPSocket. This socket holds connection
-    # parameters and allows data transfer both ways.
-    def initialize(socket)
-      @socket = socket
-      fam, @port, *addr = @socket.getpeername.unpack('nnC4')
-
-      @ip = addr.join('.')
-      puts "New connection from #{@ip}:#{@port}"
+    def initialize(server_addr,server_port)
+      @socket = TCPSocket.new server_addr, server_port
+      connect
     end
 
-    # Write a string to the client socket, using <tt>TCPSocket.puts</tt>.
-    def say(string)
-      @socket.puts string
-    end
-
-    # Read from the client socket, using <tt>TCPSocket.gets</tt>.
-    def read
-      @socket.gets
-    end
-
-    # Close the socket connection, using <tt>TCPSocket.close</tt>.
-    def close
-      puts "Closing connection to client #{@ip}"
+    # Send data to the server and close the connection.
+    def send(data_hash)
+      @socket.puts JSON.generate(data_hash)
       @socket.close
     end
+    
+    private
+    # Connect and check the server response.
+    def connect
+      intro = ''
+      while l = @socket.gets
+        intro += l
+      end
+      if intro !=~ /ChainReactor/
+        @socket.close
+        raise "Invalid server response: #{intro}"
+      end
+    end
 
   end
-
 end
