@@ -13,6 +13,9 @@ module ChainReactor
   include Log4r
 
   Main do
+    input :data do
+      optional
+    end
 
     option :address do
       argument_required
@@ -30,8 +33,35 @@ module ChainReactor
 
     def run
       require 'client'
-      cli = Client.new params[:address].value, params[:port].value
-      cli.send({:hello => 'world'})
+
+      client = Client.new params[:address].value, params[:port].value
+      data_input = params[:data].value
+
+      if data_input
+        client.send_raw(data_input.gets)
+      else
+        STDOUT.sync = true
+        hash_to_send = {}
+        puts "No data supplied, what do you want to send? (Leave key blank to end)"
+        incr = 1
+
+        loop do
+          print "Key ##{incr}: "
+          key = STDIN.gets.chomp
+
+          if key == ""
+            break
+          end
+
+          print "Value ##{incr}: "
+          value = STDIN.gets.chomp
+
+          hash_to_send[key] = value
+        end
+  
+        client.send(hash_to_send)
+        client.close()
+      end
     end
   end
 end

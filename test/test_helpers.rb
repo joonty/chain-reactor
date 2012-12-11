@@ -1,19 +1,40 @@
 
 module ChainReactor
   module TestHelpers
+    class Logger
+      def debug
+      end
+      def info
+      end
+      def warning
+      end
+      def error
+      end
+      def fatal
+      end
+    end
+
+    class CliParam
+      def initialize(value)
+        @value = value
+        @given = true
+      end
+
+      def value
+        @value
+      end
+
+      def given=(given)
+        @given = given
+      end
+
+      def given?
+        @given
+      end
+    end
+
     def get_logger
-      logger = Object.new
-      def logger.debug
-      end
-      def logger.info
-      end
-      def logger.warning
-      end
-      def logger.error
-      end
-      def logger.fatal
-      end
-      logger
+      Logger.new
     end
   end
 end

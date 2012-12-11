@@ -25,7 +25,7 @@ class TestJsonParser < Test::Unit::TestCase
     ex = assert_raise ChainReactor::RequiredKeyError do
       parser.parse('{"key1":"value","key2":"value"}',['monkey'],false)
     end
-    assert_match(/Required key monkey/, ex.message)
+    assert_match(/Required key 'monkey'/, ex.message)
   end
 
   # Test that a valid JSON string returns a cause object with correct

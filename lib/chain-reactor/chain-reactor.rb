@@ -6,7 +6,6 @@ module ChainReactor
   require "version"
 
   require 'rubygems'
-  require 'daemons'
   require 'main'
   require 'log4r'
 

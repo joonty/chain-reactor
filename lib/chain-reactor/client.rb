@@ -10,11 +10,21 @@ module ChainReactor
       connect
     end
 
-    # Send data to the server and close the connection.
+    # Send hash data to the server
     def send(data_hash)
       json_string = JSON.generate(data_hash)
       puts "Sending data: #{json_string}"
       @socket.puts json_string
+    end
+    
+    # Send raw data to the server
+    def send_raw(data_string)
+      data_string.strip!
+      puts "Sending data: #{data_string}"
+      @socket.puts data_string
+    end
+
+    def close
       @socket.close
     end
     
