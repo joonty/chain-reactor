@@ -8,11 +8,10 @@ module ChainReactor
     include Singleton
 
     def initialize
-      @params = {}
-      @defaults = {}
+      reset
     end
 
-    def destroy
+    def reset
       @params = {}
       @defaults = {}
     end
@@ -21,54 +20,61 @@ module ChainReactor
       @params = params
     end
 
+    # Get the chainfile, as a File object.
+    #
+    # This is the exception - it has to come as a CLI parameter.
+    def chainfile
+      @params[:chainfile].value
+    end
+
     # Set the default bind IP address
     def address=(address)
-      set_default :address, address
+      set_default 'address', address
     end
 
     # Get the IP address to bind to
     def address
-      get_value :address
+      get_value 'address'
     end
 
     # Set the default port number
     def port=(port)
-      set_default :port, port
+      set_default 'port', port
     end
 
     # Get the port number
     def port
-      get_value :port
+      get_value 'port'
     end
 
     # Set the default multithreaded option
     def multithreaded=(multithreaded)
-      set_default :multithreaded, multithreaded
+      set_default 'multithreaded', multithreaded
     end
 
     # Get the multithreaded option
     def multithreaded
-      get_value :multithreaded
+      get_value 'multithreaded'
     end
 
     # Set the default verbosity option
     def verbosity=(verbosity)
-      set_default :verbosity, verbosity
+      set_default 'verbosity', verbosity
     end
 
     # Get the verbosity option
     def verbosity
-      get_value :verbosity
+      get_value 'verbosity'
     end
 
     # Set the default silent option
     def silent=(silent)
-      set_default :silent, silent
+      set_default 'silent', silent
     end
 
     # Get the silent option
     def silent
-      get_value :silent
+      get_value 'silent'
     end
 
     # Question mark aliases

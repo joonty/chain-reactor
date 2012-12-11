@@ -2,7 +2,7 @@ module ChainReactor
 
   require 'socket'
   require 'parser'
-  require 'client-connection'
+  require 'client_connection'
 
   # Creates a server socket and listens for client connections on an infinite
   # loop. Each connecting client creates a new thread, allowing multiple

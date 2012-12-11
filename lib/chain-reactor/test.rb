@@ -5,13 +5,16 @@ module ChainReactor
 
   require "version"
 
+  require 'log4r'
   require 'rubygems'
   require 'conf'
 
-#  log = Logger.new 'chain-reactor'
-#  log.level = DEBUG
-#
-#  log.outputters << Outputter.stdout
+  include Log4r
+
+  log = Logger.new 'chain-reactor'
+  log.level = DEBUG
+
+  log.outputters << Outputter.stdout
 #
 #  reactor = ChainfileParser.new(File.new('/home/jon/chainfile.rb'),log).parse
 #  server = Server.new('127.0.0.1',20000,reactor,log)

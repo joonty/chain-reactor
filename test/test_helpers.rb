@@ -33,9 +33,20 @@ module ChainReactor
       end
     end
 
+    class File
+      def initialize(string)
+        @string = string
+      end
+
+      def read
+        @string
+      end
+    end
+
     def get_logger
       Logger.new
     end
+
   end
 end
 

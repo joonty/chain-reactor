@@ -5,5 +5,5 @@ gemspec
 
 gem 'json'
 gem 'mocha'
-gem 'fallen'
+gem 'dante'
 gem 'log4r'

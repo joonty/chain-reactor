@@ -12,7 +12,7 @@ module ChainReactor
   class Reaction
     require 'parser'
 
-    attr_accessor :previous_result, :previous_data
+    attr_accessor :previous_result, :previous_data, :options
 
     def initialize(options = {},block,logger)
       @options = { :parser => :json, :required_keys => [], :keys_to_sym => true }.merge(options)
