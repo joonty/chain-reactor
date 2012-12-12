@@ -13,6 +13,12 @@ module ChainReactor
 
   Main do
 
+    option :pidfile do
+      argument :required
+      description 'Pid file for the daemonized process'
+      defaults Dir.pwd+'/chain-reactor.pid'
+    end
+
     mode :start do
       description 'Start the chain reactor server'
 
@@ -23,12 +29,19 @@ module ChainReactor
       option :multithreaded do
         cast :bool
         defaults false
-        description 'Whether to allow concurrent connections in separate threads'
+        description 'Start each new connection in a separate thread'
       end
 
-      option :log_file do
+      option :ontop do
+        cast :bool
+        defaults false
+        description 'Keep the process on top instead of daemonizing'
+      end
+
+      option :logfile do
         argument :required
         description 'Log file to write messages to'
+        defaults Dir.pwd+'/chain-reactor.log'
       end
 
       option :silent do
@@ -61,29 +74,37 @@ module ChainReactor
       def run
         require 'dante'
         require 'conf'
+        require 'chainfile_parser'
 
-        Conf.instance.set_cli_params(params)
+        config = Conf.new(params)
 
         log = Logger.new 'chain-reactor'
         log.level = ChainReactor.const_get(params[:debug].value.upcase)
 
         outputter = Outputter.stdout
-        outputter.formatter = PatternFormatter.new(:pattern => "[%l] %d :: %m")
+        outputter.formatter = PatternFormatter.new(:pattern => "[%l]\t%m")
         log.outputters << outputter
 
-        Dante::Runner.new('chain-reactor').execute(:daemonize => true, :pid_path => '/home/jon/chain-reactor.pid') do
-          puts "hello"
-          loop do
-            sleep 10
-          end
-          begin
-            log = Logger['chain-reactor']
+        # Log to STDOUT/ERR while parsing the chain file, only daemonize when complete.
+        reactor = ChainfileParser.new(config.chainfile,log).parse
 
-            config = Conf.instance
-            reactor = ChainfileParser.new(config.chainfile,log).parse
+        unless config.on_top
+          log.info { "Starting daemon, PID file => #{config.pid_file}" }
+        end
+        log.info { "Starting daemon, PID file => #{config.pid_file}" }
+        # Change output format for logging to file
+        outputter.formatter = PatternFormatter.new(:pattern => "[%l] %d :: %m")
+
+        ARGV.replace []
+
+        Dante::Runner.new('chain-reactor').execute(:daemonize => !config.on_top, 
+                                                   :pid_path => config.pid_file, 
+                                                   :log_path => config.log_file) do
+
+          require 'server'
+          begin
             server = Server.new(config.address,config.port,reactor,log)
             server.start(config.multithreaded?)
-            puts "Ending, like a boss"
           rescue Exception => e
             puts "Caught exception"
             puts e.message
@@ -98,7 +119,7 @@ module ChainReactor
       def run
         require 'conf'
         require 'dante'
-        Dante::Runner.new('chain-reactor').execute(:kill => true, :pid_path => '/home/jon/chain-reactor.pid')
+        Dante::Runner.new('chain-reactor').execute(:kill => true, :pid_path => params[:pidfile].value)
 
       end
 
