@@ -14,7 +14,7 @@ module ChainReactor
       @server = TCPServer.open(address,port)
       @reactor = reactor
       @log = logger
-      @log.info { "Starting ChainReactor v#{VERSION} server on #{address}:#{port.to_s}" }
+      @log.info { "Started ChainReactor v#{VERSION} server on #{address}:#{port.to_s}" }
     end
 
     # Start the server listening on an infinite loop.
@@ -37,8 +37,12 @@ module ChainReactor
           end
         end
       rescue Interrupt, SystemExit
+        @server.close
         @log.info "Shutting down the ChainReactor server"
         raise SystemExit
+      rescue Exception => e
+        @server.close
+        raise e
       end
     end
 
@@ -63,8 +67,6 @@ module ChainReactor
     # message so the client knows what it's connected to. Finally,
     # data is read from the client and turned into a command.
     def handle_client(client)
-      @log.info { "Connected to client #{client.ip}" }
-
       unless @reactor.address_allowed? client.ip
         client.close
         @log.warn { "Terminated connection from unauthorized client #{client.ip}" }

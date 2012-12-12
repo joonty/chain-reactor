@@ -105,10 +105,12 @@ module ChainReactor
           begin
             server = Server.new(config.address,config.port,reactor,log)
             server.start(config.multithreaded?)
+            exit_status exit_success
           rescue SystemExit
             exit_status exit_success
           rescue Exception => e
-            log.error { "An error occured: #{e}" }
+            log.error { "An error occured: #{e.message}" }
+            log.debug { $!.backtrace.join("\n\t") }
             exit_status exit_failure
           end
         end
