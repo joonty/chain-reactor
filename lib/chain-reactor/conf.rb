@@ -123,7 +123,9 @@ module ChainReactor
     #
     # A ConfError exception is thrown if the key is unknown.
     def get_value(key)
-      begin
+      if @params.fetch(key,nil).nil?
+        raise ConfError, "Missing configuration value '#{key}'"
+      else
         if @params[key].given?
           @params[key].value
         elsif @defaults.has_key? key
@@ -131,8 +133,6 @@ module ChainReactor
         else
           @params[key].value
         end
-      rescue ::Main::Parameter::NoneSuch
-        raise ConfError, "Missing configuration value '#{key}'"
       end
     end
   end

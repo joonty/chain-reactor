@@ -33,12 +33,6 @@ class TestConf < Test::Unit::TestCase
     assert_equal '192.168.0.1', conf.address
   end
 
-  def test_address_default_without_cli_param
-    conf = ChainReactor::Conf.new({})
-    conf.address = '127.0.0.1'
-    assert_equal '127.0.0.1', conf.address
-  end
-
   def test_address_raises_error
     conf = ChainReactor::Conf.new({})
     assert_raises(ChainReactor::ConfError) { conf.address }
