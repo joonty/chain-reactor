@@ -1,7 +1,8 @@
 require 'test/unit'
 require 'rubygems'
 require 'mocha/setup'
-require 'parser'
+require 'parsers/parser'
+require 'parsers/json_parser'
 require 'test_helpers'
 
 # Test case for the <tt>ChainReactor::Parsers::JsonParser</tt> class.
