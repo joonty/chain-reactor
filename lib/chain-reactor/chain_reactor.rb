@@ -12,7 +12,6 @@ module ChainReactor
   include Log4r
 
   Main do
-
     option :pidfile do
       argument :required
       description 'Pid file for the daemonized process'
@@ -77,6 +76,7 @@ module ChainReactor
         require 'chainfile_parser'
 
         config = Conf.new(params)
+        config.on_top?
 
         log = Logger.new 'chain-reactor'
         log.level = ChainReactor.const_get(params[:debug].value.upcase)
@@ -105,9 +105,11 @@ module ChainReactor
           begin
             server = Server.new(config.address,config.port,reactor,log)
             server.start(config.multithreaded?)
+          rescue SystemExit
+            exit_status exit_success
           rescue Exception => e
-            puts "Caught exception"
-            puts e.message
+            log.error { "An error occured: #{e}" }
+            exit_status exit_failure
           end
         end
       end
@@ -119,8 +121,9 @@ module ChainReactor
       def run
         require 'conf'
         require 'dante'
-        Dante::Runner.new('chain-reactor').execute(:kill => true, :pid_path => params[:pidfile].value)
-
+        puts "Attempting to stop chain reactor server with pid file: #{params[:pidfile].value}"
+        failed = !Dante::Runner.new('chain-reactor').execute(:kill => true, :pid_path => params[:pidfile].value)
+        exit_status exit_failure if failed
       end
 
     end

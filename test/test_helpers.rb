@@ -14,6 +14,25 @@ module ChainReactor
       end
     end
 
+    class Params
+      def initialize(hash_data)
+        @hash = hash_data
+      end
+
+      def method_missing(name, *args, &block)
+        @hash.send(name, *args, &block)
+      end
+
+      def fetch(key,&block)
+        begin
+          @hash.fetch(key,&block)
+        rescue KeyError => e
+          raise ::Main::Parameter::NoneSuch, key
+        end
+      end
+
+    end
+
     class CliParam
       def initialize(value)
         @value = value
