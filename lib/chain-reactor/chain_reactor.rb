@@ -3,15 +3,25 @@ module ChainReactor
   lib_dir = File.dirname(__FILE__)
   $:.unshift lib_dir
 
-  require "version"
-
+  require 'version'
   require 'rubygems'
   require 'main'
-  require 'log4r'
-
-  include Log4r
+  require 'create_log'
 
   Main do
+    input :chainfile do
+      description 'A valid chainfile - run with the template argument to create a template'
+    end
+
+      option :debug do
+        log_levels = %w(debug info warn error fatal)
+        argument :required
+        validate { |str| log_levels.include? str }
+        synopsis '--debug=('+log_levels.join('|')+')  (0 ~> debug=info)'
+        defaults 'info'
+        description 'Type of messages to send to output'
+      end
+
     option :pidfile do
       argument :required
       description 'Pid file for the daemonized process'
@@ -20,10 +30,6 @@ module ChainReactor
 
     mode :start do
       description 'Start the chain reactor server'
-
-      input :chainfile do
-        description 'A valid chainfile - run with the template argument to create a template'
-      end
 
       option :multithreaded do
         cast :bool
@@ -41,21 +47,6 @@ module ChainReactor
         argument :required
         description 'Log file to write messages to'
         defaults Dir.pwd+'/chain-reactor.log'
-      end
-
-      option :silent do
-        cast :bool
-        defaults false
-        description 'Whether to suppress all messages to stdout'
-      end
-
-      option :debug do
-        log_levels = %w(debug info warn error fatal)
-        argument :required
-        validate { |str| log_levels.include? str }
-        synopsis '--debug=('+log_levels.join('|')+')  (0 ~> debug=info)'
-        defaults 'info'
-        description 'Type of messages to send to output'
       end
 
       option :address do
@@ -76,14 +67,8 @@ module ChainReactor
         require 'chainfile_parser'
 
         config = Conf.new(params)
-        config.on_top?
 
-        log = Logger.new 'chain-reactor'
-        log.level = ChainReactor.const_get(params[:debug].value.upcase)
-
-        outputter = Outputter.stdout
-        outputter.formatter = PatternFormatter.new(:pattern => "[%l]\t%m")
-        log.outputters << outputter
+        log = ChainReactor.create_logger(params[:debug].value)
 
         # Log to STDOUT/ERR while parsing the chain file, only daemonize when complete.
         reactor = ChainfileParser.new(config.chainfile,log).parse
@@ -92,8 +77,9 @@ module ChainReactor
           log.info { "Starting daemon, PID file => #{config.pid_file}" }
         end
         log.info { "Starting daemon, PID file => #{config.pid_file}" }
+
         # Change output format for logging to file
-        outputter.formatter = PatternFormatter.new(:pattern => "[%l] %d :: %m")
+        log.outputters.first.formatter = PatternFormatter.new(:pattern => "[%l] %d :: %m")
 
         ARGV.replace []
 
@@ -121,10 +107,13 @@ module ChainReactor
       description 'Stop a running chain reactor server'
       
       def run
-        require 'conf'
         require 'dante'
-        puts "Attempting to stop chain reactor server with pid file: #{params[:pidfile].value}"
+        log = ChainReactor.create_logger(params[:debug].value)
+
+        log.info { "Attempting to stop chain reactor server with pid file: #{params[:pidfile].value}" }
+
         failed = !Dante::Runner.new('chain-reactor').execute(:kill => true, :pid_path => params[:pidfile].value)
+
         exit_status exit_failure if failed
       end
 

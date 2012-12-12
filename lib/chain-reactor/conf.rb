@@ -77,16 +77,6 @@ module ChainReactor
       get_value :verbosity
     end
 
-    # Set the default silent option
-    def silent=(silent)
-      set_default :silent, silent
-    end
-
-    # Get the silent option
-    def silent
-      get_value :silent
-    end
-
     # Set the default on_top option
     def on_top=(on_top)
       set_default :ontop, on_top
@@ -98,7 +88,6 @@ module ChainReactor
     end
 
     # Question mark aliases
-    alias :silent? :silent
     alias :on_top? :on_top
     alias :multithreaded? :multithreaded
 

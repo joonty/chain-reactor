@@ -76,18 +76,6 @@ class TestConf < Test::Unit::TestCase
     assert_equal 'debug', conf.verbosity
   end
 
-  def test_silent
-    params = Params.new({:silent => CliParam.new(true)})
-    conf = get_conf params
-    assert_equal true, conf.silent
-  end
-
-  def test_silent_alias
-    params = Params.new({:silent => CliParam.new(true)})
-    conf = get_conf params
-    assert_equal true, conf.silent?
-  end
-
   def test_on_top
     params = Params.new({:ontop => CliParam.new(true)})
     conf = get_conf params
