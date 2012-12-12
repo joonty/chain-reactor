@@ -10,7 +10,7 @@ module ChainReactor
 
   # Represents a single reaction block, defined in the chain file with the 'react_to' method. 
   class Reaction
-    require 'parser'
+    require 'parser_factory'
 
     attr_accessor :previous_result, :previous_data, :options
 

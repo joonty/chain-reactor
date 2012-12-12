@@ -1,7 +1,7 @@
 module ChainReactor
 
   require 'socket'
-  require 'parser'
+  require 'parsers/parser'
   require 'client_connection'
 
   # Creates a server socket and listens for client connections on an infinite
@@ -36,10 +36,10 @@ module ChainReactor
             handle_sock(@server.accept)
           end
         end
-      rescue Interrupt, SystemExit
+      rescue Interrupt, SystemExit => e
         @server.close
         @log.info "Shutting down the ChainReactor server"
-        raise SystemExit
+        raise e
       rescue Exception => e
         @server.close
         raise e
@@ -55,9 +55,9 @@ module ChainReactor
       rescue ClientConnectionError => e
         @log.error { "Client error: #{e.message}" }
         client.close
-      rescue ParseError => e
+      rescue ChainReactor::Parsers::ParseError => e
         @log.error { "Parser error: #{e.message}" }
-      rescue RequiredKeyError => e
+      rescue ChainReactor::Parsers::RequiredKeyError => e
         @log.error { "Client data invalid: #{e.message}" }
       end
     end

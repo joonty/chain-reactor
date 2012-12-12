@@ -2,6 +2,7 @@ require 'test/unit'
 require 'rubygems'
 require 'chainfile_parser'
 require 'test_helpers'
+require 'conf'
 
 # Test case for the <tt>ChainReactor::ChainfileParser</tt> class.
 class TestChainfileParser < Test::Unit::TestCase
@@ -12,7 +13,9 @@ class TestChainfileParser < Test::Unit::TestCase
     react_to('192.168.0.1') { |data| puts data.inspect }
     chain
 
-    parser = ChainReactor::ChainfileParser.new(File.new(chain),get_logger)
+    parser = ChainReactor::ChainfileParser.new(File.new(chain),
+                                               ChainReactor::Conf.new({}),
+                                               get_logger)
     reactor = parser.parse
     assert_equal 1, reactor.reactions_for('192.168.0.1').length
   end
@@ -24,7 +27,9 @@ class TestChainfileParser < Test::Unit::TestCase
     react_to('192.168.0.2') { |data| puts data.inspect }
     chain
 
-    parser = ChainReactor::ChainfileParser.new(File.new(chain),get_logger)
+    parser = ChainReactor::ChainfileParser.new(File.new(chain),
+                                               ChainReactor::Conf.new({}),
+                                               get_logger)
     reactor = parser.parse
     assert_equal 1, reactor.reactions_for('192.168.0.1').length
     assert_equal 2, reactor.reactions_for('192.168.0.2').length
@@ -35,7 +40,9 @@ class TestChainfileParser < Test::Unit::TestCase
     react_to(['192.168.0.1','192.168.0.2']) { |data| puts data.inspect }
     chain
 
-    parser = ChainReactor::ChainfileParser.new(File.new(chain),get_logger)
+    parser = ChainReactor::ChainfileParser.new(File.new(chain),
+                                               ChainReactor::Conf.new({}),
+                                               get_logger)
     reactor = parser.parse
     assert_equal 1, reactor.reactions_for('192.168.0.1').length
     assert_equal 1, reactor.reactions_for('192.168.0.2').length
@@ -46,7 +53,9 @@ class TestChainfileParser < Test::Unit::TestCase
     react_to('192.168.0.1', parser: :dummy, required_keys: [:hello,:world]) { |data| puts data.inspect }
     chain
 
-    parser = ChainReactor::ChainfileParser.new(File.new(chain),get_logger)
+    parser = ChainReactor::ChainfileParser.new(File.new(chain),
+                                               ChainReactor::Conf.new({}),
+                                               get_logger)
     reactor = parser.parse
     reactions = reactor.reactions_for('192.168.0.1')
     reaction = reactions.first

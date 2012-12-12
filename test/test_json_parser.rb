@@ -13,7 +13,7 @@ class TestJsonParser < Test::Unit::TestCase
   # passed.
   def test_parse_invalid_json_raises_error
     parser = ChainReactor::Parsers::JsonParser.new get_logger
-    ex = assert_raise ChainReactor::ParseError do
+    ex = assert_raise ChainReactor::Parsers::ParseError do
       parser.parse("not a json",[],false)
     end
     assert_match( /not a valid JSON/, ex.message)
@@ -23,7 +23,7 @@ class TestJsonParser < Test::Unit::TestCase
   # passed.
   def test_parse_wrong_json_raises_error
     parser = ChainReactor::Parsers::JsonParser.new get_logger
-    ex = assert_raise ChainReactor::RequiredKeyError do
+    ex = assert_raise ChainReactor::Parsers::RequiredKeyError do
       parser.parse('{"key1":"value","key2":"value"}',['monkey'],false)
     end
     assert_match(/Required key 'monkey'/, ex.message)

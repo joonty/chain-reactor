@@ -7,11 +7,20 @@ module ChainReactor
   require 'rubygems'
   require 'main'
   require 'create_log'
+  require 'conf'
 
   Main do
-    input :chainfile do
-      description 'A valid chainfile - run with the template argument to create a template'
+    description 'Chain reactor is a server that responds to network events and runs ruby code. Run with the `start\' option and \'--help\' to see options, or use the `template\' option to create an example chainfile.'
+    def run
+      help!
     end
+
+    mode :start do
+      description 'Start the chain reactor server, as a daemon or (optionally) on top. Daemonizing starts a background process, creates a pid file and a log file.'
+
+      input :chainfile do
+        description 'A valid chainfile - run with the template argument to create a template'
+      end
 
       option :debug do
         log_levels = %w(debug info warn error fatal)
@@ -22,14 +31,11 @@ module ChainReactor
         description 'Type of messages to send to output'
       end
 
-    option :pidfile do
-      argument :required
-      description 'Pid file for the daemonized process'
-      defaults Dir.pwd+'/chain-reactor.pid'
-    end
-
-    mode :start do
-      description 'Start the chain reactor server'
+      option :pidfile do
+        argument :required
+        description 'Pid file for the daemonized process'
+        defaults Dir.pwd+'/chain-reactor.pid'
+      end
 
       option :multithreaded do
         cast :bool
@@ -54,7 +60,7 @@ module ChainReactor
         defaults '127.0.0.1'
         description 'IP address to bind to'
       end
-        
+
       option :port do
         argument :required
         defaults 20000
@@ -62,61 +68,114 @@ module ChainReactor
       end
 
       def run
-        require 'dante'
-        require 'conf'
-        require 'chainfile_parser'
+        require 'controller'
 
-        config = Conf.new(params)
-
+        conf = Conf.new(params)
         log = ChainReactor.create_logger(params[:debug].value)
 
-        # Log to STDOUT/ERR while parsing the chain file, only daemonize when complete.
-        reactor = ChainfileParser.new(config.chainfile,log).parse
-
-        unless config.on_top
-          log.info { "Starting daemon, PID file => #{config.pid_file}" }
-        end
-        log.info { "Starting daemon, PID file => #{config.pid_file}" }
-
-        # Change output format for logging to file
-        log.outputters.first.formatter = PatternFormatter.new(:pattern => "[%l] %d :: %m")
-
-        ARGV.replace []
-
-        Dante::Runner.new('chain-reactor').execute(:daemonize => !config.on_top, 
-                                                   :pid_path => config.pid_file, 
-                                                   :log_path => config.log_file) do
-
-          require 'server'
-          begin
-            server = Server.new(config.address,config.port,reactor,log)
-            server.start(config.multithreaded?)
-            exit_status exit_success
-          rescue SystemExit
-            exit_status exit_success
-          rescue Exception => e
-            log.error { "An error occured: #{e.message}" }
-            log.debug { $!.backtrace.join("\n\t") }
-            exit_status exit_failure
-          end
+        begin
+          Controller.new(conf,log).start
+        rescue Interrupt, SystemExit
+          exit_status exit_success
+        rescue ChainfileParserError => e
+          log.error { "Failed to parse chainfile: {#{e.original.class.name}}: #{e.original.message}" }
+          exit_status exit_failure
+        rescue Exception => e
+          log.error { "An error occured {#{e.class.name}}: #{e.message}" }
+          log.debug { $!.backtrace.join("\n\t") }
+          exit_status exit_failure
         end
       end
     end
 
     mode :stop do
-      description 'Stop a running chain reactor server'
-      
-      def run
-        require 'dante'
-        log = ChainReactor.create_logger(params[:debug].value)
+      description 'Stop a running chain reactor server daemon. Specify the path to the pid file to stop a specific chain reactor instance.'
 
-        log.info { "Attempting to stop chain reactor server with pid file: #{params[:pidfile].value}" }
-
-        failed = !Dante::Runner.new('chain-reactor').execute(:kill => true, :pid_path => params[:pidfile].value)
-
-        exit_status exit_failure if failed
+      input :chainfile do
+        description 'A valid chainfile - run with the template argument to create a template'
       end
 
+      option :debug do
+        log_levels = %w(debug info warn error fatal)
+        argument :required
+        validate { |str| log_levels.include? str }
+        synopsis '--debug=('+log_levels.join('|')+')  (0 ~> debug=info)'
+        defaults 'info'
+        description 'Type of messages to send to output'
+      end
+
+      option :pidfile do
+        argument :required
+        description 'Pid file for the daemonized process'
+        defaults Dir.pwd+'/chain-reactor.pid'
+      end
+
+      def run
+        require 'controller'
+
+        log = ChainReactor.create_empty_logger(params[:debug].value)
+        conf = Conf.new(params)
+
+        puts "Attempting to stop chain reactor server with pid file: #{params[:pidfile].value}"
+        c = Controller.new(conf,log)
+        failed = c.stop
+
+        exit_status(exit_failure) if failed
+      end
+
+    end
+
+    mode 'template' do
+      description 'Create a template chainfile, to use as an example.'
+
+      output :chainfile do
+        description 'An output file location for the template'
+      end
+
+      def run
+        chainfile = params[:chainfile].value
+        chainfile.puts <<-eos
+#####################
+#     Chainfile     #
+#####################
+ 
+# Do something when 127.0.0.1 sends a JSON
+react_to('127.0.0.1') do |data|
+
+  # The JSON string sent by the client is now a ruby hash
+  puts data.inspect
+
+end
+
+# Use the same reaction for multiple clients, and require keys to exist
+react_to( ['127.0.0.1','192.168.0.2'], :requires => [:mykey] ) do |data|
+
+  # You can be sure this exists
+  puts data[:mykey]
+
+end
+
+## Everything from here on is optional, and  can be overridden 
+## by equivalent command line parameters
+
+## Address to bind to
+address '127.0.0.1'
+
+## Port to listen on
+port 20000
+
+## Location of pid file, for daemon
+# pidfile '/var/run/chain-reactor.pid'
+
+## Location of log file, for daemon
+# logfile '/var/log/chain-reactor.log'
+
+## Whether to accept each client in a separate thread.
+# multithreaded true
+
+        eos
+        puts "Written example chain file to #{chainfile.path}"
+      end
     end
   end
 

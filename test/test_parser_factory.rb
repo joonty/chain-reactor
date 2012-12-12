@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'rubygems'
-require 'parser'
+require 'parser_factory'
 require 'test_helpers'
 require 'dummy_parser'
 
