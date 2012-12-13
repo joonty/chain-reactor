@@ -2,6 +2,7 @@ module ChainReactor
   require 'log4r'
   include Log4r
 
+  # Creates a logger object that prints to STDOUT.
   def self.create_logger(level)
     log = self.create_empty_logger(level)
 
@@ -11,6 +12,7 @@ module ChainReactor
     log
   end
 
+  # Creates a logger object with no outputter.
   def self.create_empty_logger(level)
     log = Logger.new 'chain-reactor'
     log.level = ChainReactor.const_get(level.upcase)

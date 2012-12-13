@@ -9,17 +9,33 @@ module ChainReactor
   require 'create_log'
   require 'conf'
 
+  # Set up command line options and usage with the main gem.
   Main do
-    description 'Chain reactor is a server that responds to network events and runs ruby code. Run with the `start\' option and \'--help\' to see options, or use the `template\' option to create an example chainfile.'
+    examples "chain-reactor start chainfile.rb ", 
+             "chain-reactor stop chainfile.rb",
+             "chain-reactor template chainfile.rb"
+
+    description 'Chain reactor is a server that responds to network events and runs ruby code. Run with the `start\' mode and \'--help\' to see options, or use the `template\' mode to create an example chainfile.'
+
+    # Show help if they run without a mode
     def run
       help!
     end
 
+    # Start the server, as a daemon or on top.
     mode :start do
+
       description 'Start the chain reactor server, as a daemon or (optionally) on top. Daemonizing starts a background process, creates a pid file and a log file.'
 
+      examples "chain-reactor start chainfile.rb ", 
+               "chain-reactor start chainfile.rb --ontop",
+               "chain-reactor start chainfile.rb --pidfile /path/to/pidfile.pid"
+
       input :chainfile do
-        description 'A valid chainfile - run with the template argument to create a template'
+        description 'A valid chainfile - run with the template mode to create an example'
+        error do |e| 
+          puts "ERROR: A valid chainfile must be supplied - run with the 'template' mode to generate an example"
+        end
       end
 
       option :debug do

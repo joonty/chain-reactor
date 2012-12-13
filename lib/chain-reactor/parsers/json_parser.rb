@@ -7,8 +7,8 @@ module ChainReactor::Parsers
       begin
         @log.debug { "Parsing JSON string #{string.inspect}" }
         JSON.parse(string)
-      rescue JSON::ParserError
-        raise ParseError, "Data from client is not a valid JSON: #{string}"
+      rescue JSON::ParserError => e
+        raise ParseError, "Data from client is not a valid JSON: #{string}, error: #{e.message}"
       end
     end
   end
