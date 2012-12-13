@@ -9,3 +9,7 @@ gem 'dante'
 gem 'log4r'
 
 gem 'xml-simple', :require => false
+
+group :test do
+  gem 'sys-proctable'
+end

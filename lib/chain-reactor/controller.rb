@@ -29,6 +29,7 @@ module ChainReactor
     end
 
     def stop
+      ARGV.replace []
       Dante::Runner.new('chain-reactor').execute(:kill => true, 
                                                  :pid_path => @config.pid_file)
     end

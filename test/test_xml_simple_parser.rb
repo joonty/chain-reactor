@@ -5,10 +5,6 @@ require 'parsers/parser'
 require 'parsers/xml_simple_parser'
 require 'helpers'
 
-def parse
-  @file.read
-end
-
 # Test case for the <tt>ChainReactor::Parsers::XmlSimpleParser</tt> class.
 class TestXmlSimpleParser < Test::Unit::TestCase
   include ChainReactor::TestHelpers

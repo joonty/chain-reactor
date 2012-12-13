@@ -13,7 +13,7 @@ module ChainReactor
   Main do
     examples 'chain-reactor start chainfile.rb ', 
              'chain-reactor stop chainfile.rb',
-             'chain-reactor template chainfile.rb'
+             'chain-reactor template'
 
     description 'Chain reactor is a server that responds to network events and runs ruby code. Run with the `start\' mode and \'--help\' to see options, or use the `template\' mode to create an example chainfile.'
 
@@ -135,7 +135,7 @@ module ChainReactor
         log = ChainReactor.create_empty_logger(params[:debug].value)
         conf = Conf.new(params)
 
-        puts "Attempting to stop chain reactor server with pid file: #{params[:pidfile].value}"
+        puts "Attempting to stop chain reactor server with pid file: #{conf.pid_file}"
         c = Controller.new(conf,log)
         failed = c.stop
 
@@ -145,18 +145,12 @@ module ChainReactor
     end
 
     mode 'template' do
-      description 'Create a template chainfile, to use as an example.'
+      description 'Create a template chainfile, to see examples of configuration options and reaction syntax.'
 
-      output :chainfile do
-        description 'An output file location for the template'
-        error do |e| 
-          STDERR.puts 'chain-reactor: Please specify a valid output path for the chainfile'
-        end
-      end
+      examples 'chain-reactor template'
 
       def run
-        chainfile = params[:chainfile].value
-        chainfile.puts <<-eos
+        puts <<-eos
 #####################
 #     Chainfile     #
 #####################
@@ -204,7 +198,6 @@ port 20000
 # multithreaded true
 
         eos
-        puts "Written example chain file to #{chainfile.path}"
       end
     end
   end

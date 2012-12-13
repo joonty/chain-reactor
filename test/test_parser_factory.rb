@@ -23,4 +23,8 @@ class TestParserFactory < Test::Unit::TestCase
     assert_kind_of ChainReactor::Parsers::DummyParser, parser
   end
   
+  def test_get_parser_gives_dummy_parser_with_capitalized_string
+    parser = ChainReactor::ParserFactory.get_parser('Dummy',get_logger)
+    assert_kind_of ChainReactor::Parsers::DummyParser, parser
+  end
 end

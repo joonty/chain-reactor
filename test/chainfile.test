@@ -1,0 +1,7 @@
+##########################################
+#     Chainfile for integration tests    #
+##########################################
+ 
+react_to('127.0.0.1') do |data|
+  puts data.inspect
+end
