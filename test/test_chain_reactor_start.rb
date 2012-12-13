@@ -16,7 +16,9 @@ class TestChainReactorStart < Test::Unit::TestCase
   end
 
   def teardown
-    stop_chain_reactor
+    _,_,_,t = stop_chain_reactor
+    t.value
+    
     $stdout = STDOUT
   end
 
@@ -57,7 +59,30 @@ class TestChainReactorStart < Test::Unit::TestCase
       client = ChainReactor::Client.new('127.0.0.1',20000)
       client.send({:hello => :world})
     end
+  end
 
+  def test_start_daemon_with_port_override_and_communicate_with_client
+    _, stdout, _, _ = start_chain_reactor('--port 20100')
+    output = stdout.read
+    assert_match(/Daemon has started successfully/,output)
+
+    assert_nothing_raised ChainReactor::ClientError do
+      $stdout = File.new('/dev/null','w')
+      client = ChainReactor::Client.new('127.0.0.1',20100)
+      client.send({:hello => :world})
+    end
+  end
+
+  def test_start_daemon_with_address_override_and_communicate_with_client
+    _, stdout, _, _ = start_chain_reactor('--address 0.0.0.0')
+    output = stdout.read
+    assert_match(/Daemon has started successfully/,output)
+
+    assert_nothing_raised ChainReactor::ClientError do
+      $stdout = File.new('/dev/null','w')
+      client = ChainReactor::Client.new('0.0.0.0',20000)
+      client.send({:hello => :world})
+    end
   end
 end
 
