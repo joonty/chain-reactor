@@ -7,3 +7,5 @@ gem 'json'
 gem 'mocha'
 gem 'dante'
 gem 'log4r'
+
+gem 'xml-simple', :require => false

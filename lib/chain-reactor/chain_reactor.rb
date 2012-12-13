@@ -11,9 +11,9 @@ module ChainReactor
 
   # Set up command line options and usage with the main gem.
   Main do
-    examples "chain-reactor start chainfile.rb ", 
-             "chain-reactor stop chainfile.rb",
-             "chain-reactor template chainfile.rb"
+    examples 'chain-reactor start chainfile.rb ', 
+             'chain-reactor stop chainfile.rb',
+             'chain-reactor template chainfile.rb'
 
     description 'Chain reactor is a server that responds to network events and runs ruby code. Run with the `start\' mode and \'--help\' to see options, or use the `template\' mode to create an example chainfile.'
 
@@ -27,14 +27,14 @@ module ChainReactor
 
       description 'Start the chain reactor server, as a daemon or (optionally) on top. Daemonizing starts a background process, creates a pid file and a log file.'
 
-      examples "chain-reactor start chainfile.rb ", 
-               "chain-reactor start chainfile.rb --ontop",
-               "chain-reactor start chainfile.rb --pidfile /path/to/pidfile.pid"
+      examples 'chain-reactor start chainfile.rb ', 
+               'chain-reactor start chainfile.rb --ontop',
+               'chain-reactor start chainfile.rb --pidfile /path/to/pidfile.pid'
 
       input :chainfile do
         description 'A valid chainfile - run with the template mode to create an example'
         error do |e| 
-          puts "ERROR: A valid chainfile must be supplied - run with the 'template' mode to generate an example"
+          STDERR.puts "chain-reactor: A valid chainfile must be supplied - run with the 'template' mode to generate an example"
         end
       end
 
@@ -109,6 +109,9 @@ module ChainReactor
 
       input :chainfile do
         description 'A valid chainfile - run with the template argument to create a template'
+        error do |e| 
+          STDERR.puts "chain-reactor: A valid chainfile must be supplied - run with the 'template' mode to generate an example"
+        end
       end
 
       option :debug do
@@ -146,6 +149,9 @@ module ChainReactor
 
       output :chainfile do
         description 'An output file location for the template'
+        error do |e| 
+          STDERR.puts 'chain-reactor: Please specify a valid output path for the chainfile'
+        end
       end
 
       def run
@@ -168,6 +174,14 @@ react_to( ['127.0.0.1','192.168.0.2'], :requires => [:mykey] ) do |data|
 
   # You can be sure this exists
   puts data[:mykey]
+
+end
+
+# Change the parser, if the client sends something other than a JSON
+react_to('192.168.0.2', :parser => :xml_simple) do |data|
+
+  # The XML string sent by the client is now a ruby hash
+  puts data.inspect
 
 end
 
