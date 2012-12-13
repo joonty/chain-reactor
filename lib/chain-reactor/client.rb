@@ -11,7 +11,11 @@ module ChainReactor
     attr_reader :version
 
     def initialize(server_addr,server_port)
-      @socket = TCPSocket.new server_addr, server_port
+      begin
+        @socket = TCPSocket.new(server_addr, server_port)
+      rescue Errno::ECONNREFUSED
+        raise ClientError, "Failed to connect to Chain Reactor server on #{server_addr}:#{server_port}"
+      end
       connect
     end
 

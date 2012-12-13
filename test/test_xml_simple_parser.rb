@@ -3,7 +3,7 @@ require 'rubygems'
 require 'mocha/setup'
 require 'parsers/parser'
 require 'parsers/xml_simple_parser'
-require 'test_helpers'
+require 'helpers'
 
 def parse
   @file.read

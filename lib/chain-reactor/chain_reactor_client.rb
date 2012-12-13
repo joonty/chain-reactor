@@ -26,6 +26,7 @@ module ChainReactor
       description 'Chain reactor server port number'
     end
 
+    # Connect to a running chain reactor server and send data.
     def run
       require 'client'
 
@@ -53,6 +54,7 @@ module ChainReactor
       end
     end
 
+    # Ask the user for key value pairs, and return as a hash.
     def get_hash_from_stdin
       STDOUT.sync = true
       hash_to_send = {}

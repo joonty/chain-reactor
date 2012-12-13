@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'rubygems'
 require 'conf'
-require 'test_helpers'
+require 'helpers'
 
 # Test case for the <tt>ChainReaction::Conf</tt> class.
 class TestConf < Test::Unit::TestCase

@@ -2,7 +2,7 @@ require 'test/unit'
 require 'rubygems'
 require 'mocha/setup'
 require 'client_connection'
-require 'test_helpers'
+require 'helpers'
 
 # Test case for the <tt>ChainReactor::ClientConnection</tt> class.
 class TestClientConnection < Test::Unit::TestCase

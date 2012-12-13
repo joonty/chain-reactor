@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'rubygems'
 require 'parser_factory'
-require 'test_helpers'
+require 'helpers'
 require 'dummy_parser'
 
 # Test case for the <tt>ChainReactor::ParserFactory</tt> class.

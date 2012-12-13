@@ -6,6 +6,7 @@ require 'chain-reactor/version'
 Gem::Specification.new do |gem|
   gem.name          = "chain-reactor"
   gem.version       = ChainReactor::VERSION
+  gem.license       = 'MIT'
   gem.authors       = ["Jon Cairns"]
   gem.email         = ["jon@joncairns.com"]
   gem.description   = %q{Trigger events across networks using TCP/IP sockets}
@@ -13,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = "http://github.com/joonty/chain-reactor"
 
   gem.files         = `git ls-files`.split($/)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.executables   = %w(chain-reactor chain-reactor-client)
+  gem.test_files    = `git ls-files -- test/test_`.split($/)
   gem.require_paths = ["lib"]
 end

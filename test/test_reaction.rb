@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'rubygems'
 require 'reactor'
-require 'test_helpers'
+require 'helpers'
 require 'dummy_parser'
 
 

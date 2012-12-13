@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'rubygems'
 require 'chainfile_parser'
-require 'test_helpers'
+require 'helpers'
 require 'conf'
 
 # Test case for the <tt>ChainReactor::ChainfileParser</tt> class.
