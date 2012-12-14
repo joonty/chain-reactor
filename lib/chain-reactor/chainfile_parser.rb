@@ -6,7 +6,7 @@ module ChainReactor
     attr_reader :original
     def initialize(original)
       @original = original
-      super(original.message)
+      super(original.message.gsub(/\sfor #<ChainReactor.*>/,''))
     end
   end
 

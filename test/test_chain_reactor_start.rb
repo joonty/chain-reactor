@@ -57,7 +57,7 @@ class TestChainReactorStart < Test::Unit::TestCase
     assert_nothing_raised ChainReactor::ClientError do
       $stdout = File.new('/dev/null','w')
       client = ChainReactor::Client.new('127.0.0.1',20000)
-      client.send({:hello => :world})
+      client.send_as_json({:hello => :world})
     end
   end
 

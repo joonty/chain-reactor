@@ -94,10 +94,10 @@ module ChainReactor
         rescue Interrupt, SystemExit
           exit_status exit_success
         rescue ChainfileParserError => e
-          log.error { "Failed to parse chainfile: {#{e.original.class.name}}: #{e.original.message}" }
+          log.fatal { "Failed to parse chainfile {#{e.original.class.name}}: #{e.message}" }
           exit_status exit_failure
         rescue Exception => e
-          log.error { "An error occured {#{e.class.name}}: #{e.message}" }
+          log.fatal { "Unexpected exception {#{e.class.name}}: #{e.message}" }
           log.debug { $!.backtrace.join("\n\t") }
           exit_status exit_failure
         end

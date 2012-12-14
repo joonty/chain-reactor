@@ -36,9 +36,9 @@ module ChainReactor
         data_input = params[:data].value
 
         if data_input
-          client.send_raw(data_input.gets)
+          client.send(data_input.gets.strip)
         else
-          client.send(get_hash_from_stdin)
+          client.send_as_json(get_hash_from_stdin)
           client.close()
         end
         exit_status exit_success

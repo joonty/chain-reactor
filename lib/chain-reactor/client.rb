@@ -19,20 +19,18 @@ module ChainReactor
       connect
     end
 
-    # Send hash data to the server
-    def send(data_hash)
+    # Send hash data to the server as a JSON
+    def send_as_json(data_hash)
       if data_hash.length > 0
         json_string = JSON.generate(data_hash)
-        puts "Sending data: #{json_string}"
-        @socket.puts json_string
+        send(json_string)
       else
         raise ClientError, 'Cannot send empty data to chain reactor server'
       end
     end
     
-    # Send raw data to the server
-    def send_raw(data_string)
-      data_string.strip!
+    # Send a data string to the server
+    def send(data_string)
       if data_string.length > 0
         puts "Sending data: #{data_string}"
         @socket.puts data_string

@@ -35,6 +35,10 @@ module ChainReactor
         @log.info { "Executing reaction for address #{address}" }
         begin
           reaction.execute(data_string)
+        rescue Parsers::ParseError => e
+          @log.error { "Parser error: #{e.message}" }
+        rescue Parsers::RequiredKeyError => e
+          @log.error { "Client data invalid: #{e.message}" }
         rescue ReactionError => e
           @log.error { 'Exception raised in reaction: '+e.message }
         end

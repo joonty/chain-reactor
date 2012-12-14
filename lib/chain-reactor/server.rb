@@ -38,7 +38,7 @@ module ChainReactor
         end
       rescue Interrupt, SystemExit => e
         @server.close
-        @log.info "Shutting down the ChainReactor server"
+        @log.info { "Shutting down the ChainReactor server" }
         raise e
       rescue Exception => e
         @server.close
@@ -55,10 +55,6 @@ module ChainReactor
       rescue ClientConnectionError => e
         @log.error { "Client error: #{e.message}" }
         client.close
-      rescue ChainReactor::Parsers::ParseError => e
-        @log.error { "Parser error: #{e.message}" }
-      rescue ChainReactor::Parsers::RequiredKeyError => e
-        @log.error { "Client data invalid: #{e.message}" }
       end
     end
 
