@@ -1,3 +1,4 @@
+# Contains all parsers used to convert clients' data strings to ruby hashes.
 module ChainReactor::Parsers
 
   # Error raised if there's an error parsing a string.

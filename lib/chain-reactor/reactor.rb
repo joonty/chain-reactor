@@ -7,6 +7,7 @@ module ChainReactor
   # dispatch reactions.
   class Reactor
 
+    # Pass a logger object and define an empty address map.
     def initialize(logger)
       @address_map = {}
       @log = logger

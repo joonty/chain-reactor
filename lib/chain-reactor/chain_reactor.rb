@@ -83,6 +83,7 @@ module ChainReactor
         description 'Port number to bind to'
       end
 
+      # Run when using the 'start' mode from the command line.
       def run
         require 'controller'
 
@@ -129,6 +130,7 @@ module ChainReactor
         defaults Dir.pwd+'/chain-reactor.pid'
       end
 
+      # Run when using the 'stop' mode from the command line.
       def run
         require 'controller'
 
@@ -149,6 +151,7 @@ module ChainReactor
 
       examples 'chain-reactor template'
 
+      # Run when using the 'template' mode from the command line.
       def run
         puts <<-eos
 #####################

@@ -10,8 +10,11 @@ module ChainReactor
   #
   # The host, ip and port of the client are provided as attributes.
   class ClientConnection
-    # Allow read access
-    attr_reader :ip, :port
+
+    # Client's IP address.
+    attr_reader :ip
+    # Client's port.
+    attr_reader :port
 
     # Create the ClientConnection with a TCPSocket. This socket holds connection
     # parameters and allows data transfer both ways.

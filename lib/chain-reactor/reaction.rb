@@ -16,7 +16,12 @@ module ChainReactor
 
     require 'parser_factory'
 
-    attr_accessor :previous_result, :previous_data, :options
+    # The previous return value from this reaction, if executed before.
+    attr_accessor :previous_result
+    # The previous data set sent to this reaction, if executed before.
+    attr_accessor :previous_data
+    # Options used by this reaction.
+    attr_accessor :options
 
     # Create a new reaction, with the options and code block to run.
     def initialize(options = {},block,logger)

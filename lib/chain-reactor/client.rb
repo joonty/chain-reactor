@@ -12,6 +12,7 @@ module ChainReactor
     # The version of the chain reactor server.
     attr_reader :version
 
+    # Create a connection to a chain reactor server at the given address and port.
     def initialize(server_addr,server_port)
       begin
         @socket = TCPSocket.new(server_addr, server_port)

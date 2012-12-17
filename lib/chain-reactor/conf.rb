@@ -10,6 +10,7 @@ module ChainReactor
   # The command line parameters are provided through the gem 'main', and these
   # take precedent over options set through the chain file.
   class Conf
+
     # Create a new Conf object with the parameters from Main.
     def initialize(cli_params)
       @params = cli_params
@@ -93,7 +94,9 @@ module ChainReactor
       get_value :ontop
     end
 
+    # Alias for on_top().
     alias :on_top? :on_top
+    # Alias for multithreaded().
     alias :multithreaded? :multithreaded
 
     private
