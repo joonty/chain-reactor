@@ -3,11 +3,13 @@ require 'json'
 
 module ChainReactor
 
+  # An error raised if there are communication problems with the server.
   class ClientError < StandardError
   end
 
   # A client for connecting to a chain reactor server.
   class Client
+    # The version of the chain reactor server.
     attr_reader :version
 
     def initialize(server_addr,server_port)

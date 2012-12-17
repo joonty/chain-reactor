@@ -8,7 +8,10 @@ module ChainReactor::Parsers
   class RequiredKeyError < StandardError
   end
 
+  # Base class for all concrete implementations of parsers.
   class Parser
+    
+    # Set up the parser with a logger object.
     def initialize(logger)
       @log = logger
     end
@@ -35,10 +38,8 @@ module ChainReactor::Parsers
       data
     end
 
-    # Parse the string, using an implmentation defined by child classes. A
-    # <tt>Cause</tt> object is returned, loaded with the name, type and 
-    # client.
-    #
+    # Parse the string, using an implmentation defined by child classes. 
+    # 
     # Should return a hash.
     def do_parse(string)
       raise 'This method should implement a string to hash parser'

@@ -19,8 +19,10 @@ module ChainReactor
 
     # Start the server listening on an infinite loop.
     #
-    # When clients connect, a new thread is created. Keyboard interrupts are
-    # caught and handled gracefully.
+    # The multithreaded option allows each client connection to be opened
+    # in a new thread. 
+    #
+    # Keyboard interrupts are caught and handled gracefully.
     def start(multithreaded)
       if multithreaded
         Thread.abort_on_exception = true
@@ -48,6 +50,7 @@ module ChainReactor
 
     private
 
+    # Create a new ClientConnection when a socket is opened.
     def handle_sock(client_sock)
       begin
         client = ClientConnection.new(client_sock,@log)
@@ -58,10 +61,12 @@ module ChainReactor
       end
     end
 
-    # Handle a single client connection. First, the IP address  is checked to 
-    # see whether it's allowed to connect. Then the server sends a welcome 
+    # Handle a single client connection. 
+    #
+    # First, the IP address  is checked to determine whether it's 
+    # allowed to connect. Then the server sends a welcome 
     # message so the client knows what it's connected to. Finally,
-    # data is read from the client and turned into a command.
+    # data is read from the client and a reaction is executed.
     def handle_client(client)
       unless @reactor.address_allowed? client.ip
         client.close
@@ -84,6 +89,6 @@ module ChainReactor
       @reactor.react(client.ip,client_string)
 
     end
-  end
 
+  end
 end

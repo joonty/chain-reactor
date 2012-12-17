@@ -1,4 +1,5 @@
 module ChainReactor
+
   require 'log4r'
   include Log4r
 

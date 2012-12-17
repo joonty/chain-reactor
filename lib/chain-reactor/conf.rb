@@ -1,10 +1,16 @@
 module ChainReactor
+  # Raised when trying to access a non-existent configuration option.
   class ConfError < StandardError
   end
 
   require 'main'
 
+  # Configuration object that combines default values and command line options.
+  #
+  # The command line parameters are provided through the gem 'main', and these
+  # take precedent over options set through the chain file.
   class Conf
+    # Create a new Conf object with the parameters from Main.
     def initialize(cli_params)
       @params = cli_params
       @defaults = {}
@@ -17,77 +23,76 @@ module ChainReactor
       @params[:chainfile].value
     end
 
-    # Set the default bind IP address
+    # Set the default bind IP address.
     def address=(address)
       set_default :address, address
     end
 
-    # Get the IP address to bind to
+    # Get the IP address to bind to.
     def address
       get_value :address
     end
 
-    # Set the log file location
+    # Set the log file location.
     def log_file=(log_file)
       set_default :logfile, log_file
     end
 
-    # Get the IP log_file to bind to
+    # Get the log file location.
     def log_file
       get_value :logfile
     end
     
-    # Set the pid file location
+    # Set the pid file location.
     def pid_file=(pid_file)
       set_default :pidfile, pid_file
     end
 
-    # Get the IP pid_file to bind to
+    # Get the pid file location.
     def pid_file
       get_value :pidfile
     end
 
-    # Set the default port number
+    # Set the default port number.
     def port=(port)
       set_default :port, port
     end
 
-    # Get the port number
+    # Get the port number.
     def port
       get_value :port
     end
 
-    # Set the default multithreaded option
+    # Set the whether to run multithreaded by default.
     def multithreaded=(multithreaded)
       set_default :multithreaded, multithreaded
     end
 
-    # Get the multithreaded option
+    # Whether the server should open each client connection in a new thread.
     def multithreaded
       get_value :multithreaded
     end
 
-    # Set the default verbosity option
+    # Set the default verbosity.
     def verbosity=(verbosity)
       set_default :verbosity, verbosity
     end
 
-    # Get the verbosity option
+    # How verbose the program should be.
     def verbosity
       get_value :verbosity
     end
 
-    # Set the default on_top option
+    # Set whether to run on top (instead of daemonizing).
     def on_top=(on_top)
       set_default :ontop, on_top
     end
 
-    # Get the on_top option
+    # Whether to run on top (instead of daemonizing).
     def on_top
       get_value :ontop
     end
 
-    # Question mark aliases
     alias :on_top? :on_top
     alias :multithreaded? :multithreaded
 

@@ -35,20 +35,20 @@ A chain file is required to run, as this specifies which clients to accept and w
 
     $ chain-reactor template > Chainfile.rb
 
-You might like to test it locally first, i.e. only react to 127.0.0.1 addresses. In one terminal, run:
+Open it up and edit it to your liking. You might want to test it locally first, i.e. only react to 127.0.0.1 addresses. In one terminal, run:
 
     $ chain-reactor start Chainfile.rb --ontop
 
-And in another, run the client with:
+The --ontop option stops it from running as a daemon, making it easier to see what's happening. In another terminal, run the client with:
 
     $ chain-reactor-client --address 127.0.0.1 --port 20000
 
-Add key/value pair data to send to the server, then watch it react!
+Follow the instructions by adding key/value pair data to send to the server, then watch it react!
 
 == Contributing
 
 1. Fork it
-2. Create your feature branch (+git checkout -b my-new-feature+)
-3. Commit your changes (+git commit -am 'Add some feature'+)
-4. Push to the branch (+git push origin my-new-feature+)
+2. Create your feature branch (<tt>git checkout -b my-new-feature</tt>)
+3. Commit your changes (<tt>git commit -am 'Add some feature'</tt>)
+4. Push to the branch (<tt>git push origin my-new-feature</tt>)
 5. Create new Pull Request

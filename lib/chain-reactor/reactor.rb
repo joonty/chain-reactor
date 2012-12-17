@@ -1,6 +1,10 @@
 module ChainReactor
   require 'reaction'
 
+  # Contains the map of reactions and allowed client addresses.
+  #
+  # This is used to determine which clients are allowed to connect, and to
+  # dispatch reactions.
   class Reactor
 
     def initialize(logger)
@@ -9,6 +13,8 @@ module ChainReactor
     end
 
     # Add a react_to block from the chain file.
+    #
+    # Creates a Reaction object and calls add_address().
     def add(addresses,options,block)
       reaction = Reaction.new(options,block,@log)
       addresses.each { |addr| add_address(addr,reaction) }

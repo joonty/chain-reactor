@@ -1,9 +1,13 @@
 module ChainReactor
+  
+  # The Controller manages starting and stopping of the server, and daemonizing.
   class Controller
+
     require 'chainfile_parser'
     require 'server'
     require 'dante'
 
+    # Parse the chain file with a ChainfileParser object.
     def initialize(config,log)
       @config = config
       @log = log
@@ -12,6 +16,9 @@ module ChainReactor
 
     end
 
+    # Start the server, as a daemon or on top if --ontop is supplied as a CLI arg.
+    #
+    # Uses dante as the daemonizer.
     def start
       # Change output format for logging to file if daemonizing
       unless @config.on_top?
@@ -28,6 +35,7 @@ module ChainReactor
       end
     end
 
+    # Stop a daemonized process via the PID file specified in the options.
     def stop
       ARGV.replace []
       Dante::Runner.new('chain-reactor').execute(:kill => true, 
@@ -36,6 +44,7 @@ module ChainReactor
 
     protected
 
+      # Get a hash of the options passed to the daemonizer, dante.
       def daemon_opts
         { 
           :daemonize => !@config.on_top, 

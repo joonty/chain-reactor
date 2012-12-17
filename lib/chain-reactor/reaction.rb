@@ -1,5 +1,8 @@
 module ChainReactor
 
+  # Raised if there's an error running a reaction.
+  #
+  # This is a simple wrapper around the originally raised exception.
   class ReactionError < StandardError
     attr_accessor :original_exception
     def initialize(original_exception)
@@ -10,10 +13,12 @@ module ChainReactor
 
   # Represents a single reaction block, defined in the chain file with the 'react_to' method. 
   class Reaction
+
     require 'parser_factory'
 
     attr_accessor :previous_result, :previous_data, :options
 
+    # Create a new reaction, with the options and code block to run.
     def initialize(options = {},block,logger)
       @options = { :parser => :json, :required_keys => [], :keys_to_sym => true }.merge(options)
       @block = block
@@ -32,5 +37,6 @@ module ChainReactor
         raise ReactionError.new(e)
       end
     end
+
   end
 end

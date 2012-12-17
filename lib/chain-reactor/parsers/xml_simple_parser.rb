@@ -1,8 +1,13 @@
 module ChainReactor::Parsers
-  # Parse the string as a JSON object.
+   
+  # Parse the string using the xml simple library.
   class XmlSimpleParser < Parser
+
     require 'xmlsimple'
 
+    # Parse an XML string, returning the result as a hash.
+    #
+    # Raises a ParseError on failure.
     def do_parse(string)
       begin
         @log.debug { "Parsing XML string #{string.inspect}" }

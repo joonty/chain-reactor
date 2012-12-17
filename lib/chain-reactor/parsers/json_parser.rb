@@ -1,8 +1,12 @@
 module ChainReactor::Parsers
+
   # Parse the string as a JSON object.
   class JsonParser < Parser
     require 'json'
 
+    # Parse a JSON string, returning the result as a hash.
+    #
+    # Raises a ParseError on failure.
     def do_parse(string)
       begin
         @log.debug { "Parsing JSON string #{string.inspect}" }
@@ -12,4 +16,5 @@ module ChainReactor::Parsers
       end
     end
   end
+
 end

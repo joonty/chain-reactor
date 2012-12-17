@@ -17,7 +17,7 @@ module ChainReactor
 
     description 'Chain reactor is a server that responds to network events and runs ruby code. Run with the `start\' mode and \'--help\' to see options, or use the `template\' mode to create an example chainfile.'
 
-    # Show help if they run without a mode
+    # Show the command line options if run without a mode.
     def run
       help!
     end
