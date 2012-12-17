@@ -41,7 +41,7 @@ Open it up and edit it to your liking. You might want to test it locally first, 
 
 The --ontop option stops it from running as a daemon, making it easier to see what's happening. In another terminal, run the client with:
 
-    $ chain-reactor-client --address 127.0.0.1 --port 20000
+    $ chain-reactor-client --address 127.0.0.1 --port 1987
 
 Follow the instructions by adding key/value pair data to send to the server, then watch it react!
 

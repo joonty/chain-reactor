@@ -24,6 +24,7 @@ module ChainReactor
       required
       cast :int
       description 'Chain reactor server port number'
+      defaults 1987
     end
 
     # Connect to a running chain reactor server and send data.

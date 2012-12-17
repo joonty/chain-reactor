@@ -79,7 +79,7 @@ module ChainReactor
 
       option :port do
         argument :required
-        defaults 20000
+        defaults 1987
         description 'Port number to bind to'
       end
 
@@ -189,7 +189,7 @@ end
 address '127.0.0.1'
 
 ## Port to listen on
-port 20000
+port 1987
 
 ## Location of pid file, for daemon
 # pidfile '/var/run/chain-reactor.pid'
