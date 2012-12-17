@@ -1,24 +1,49 @@
 = Chain Reactor
 
-TODO: Write a gem description
+Chain Reactor is a simple server that waits for incoming connections, then kicks off some code when one is made. Clients are locked down by IP address, so you will only recieve connections from known clients. Also, data can be passed via JSON, XML, or anything you like.
+
+The "reactions" are written in ruby code, like this:
+
+    react_to '192.168.0.1' do |data|
+      puts "Hello, 192.168.0.1, I'm going to do something now!"
+      puts data.inspect  #=> Prints a hash
+    end
+
+It really is that easy. Also, you can respond to multiple clients with the same code block:
+
+    react_to ['192.168.0.1','192.168.0.2'] do |data|
+      puts "Hello, I'm going to do something now!"
+    end
+
+It can be run as a daemon, multithreaded (each client connection in a new thread), and bind to different addresses and ports.
+
+== Why?
+
+This project started as a way of notifying other machines about builds happening on Jenkins, our continuous integration server. A chain reactor server would be sitting, listening for connections. When a build fails or passes on Jenkins, it lets the chain reactor server(s) know, pushing the build data. The chain reactor server then does what it likes, and the Jenkins server doesn't need to know.
+
+I'm sure this has plenty of other uses, but it works great with continuous integration set-ups.
 
 == Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'chain-reactor'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+This can be installed through ruby gems:
 
     $ gem install chain-reactor
 
 == Usage
 
-TODO: Write usage instructions here
+A chain file is required to run, as this specifies which clients to accept and what to do. Fortunately, it's easy to create a template:
+
+    $ chain-reactor template > Chainfile.rb
+
+You might like to test it locally first, i.e. only react to 127.0.0.1 addresses. In one terminal, run:
+
+    $ chain-reactor start Chainfile.rb --ontop
+
+And in another, run the client with:
+
+    $ chain-reactor-client --address 127.0.0.1 --port 20000
+
+Add key/value pair data to send to the server, then watch it react!
 
 == Contributing
 
