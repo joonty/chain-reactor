@@ -39,9 +39,9 @@ Open it up and edit it to your liking. You might want to test it locally first, 
 
     $ chain-reactor start Chainfile.rb --ontop
 
-The --ontop option stops it from running as a daemon, making it easier to see what's happening. In another terminal, run the client with:
+The --ontop option stops it from running as a daemon, making it easier to see what's happening. By default, the chain reactor server runs on port 1987, but that's configurable if you want to change it. In another terminal, run the client with:
 
-    $ chain-reactor-client --address 127.0.0.1 --port 1987
+    $ chain-reactor-client --address 127.0.0.1
 
 Follow the instructions by adding key/value pair data to send to the server, then watch it react!
 
