@@ -31,7 +31,9 @@ This can be installed through ruby gems:
 
 == Usage
 
-A chain file is required to run, as this specifies which clients to accept and what to do. Fortunately, it's easy to create a template:
+Chain reactor comes with two command line tools, <tt>chain-reactor</tt> (the server) and <tt>chain-reactor-client</tt> (I think you can guess).
+
+A chain file is required to run the server, as this specifies which clients to accept and what to do. Fortunately, it's easy to create a template:
 
     $ chain-reactor template > Chainfile.rb
 
@@ -44,6 +46,8 @@ The --ontop option stops it from running as a daemon, making it easier to see wh
     $ chain-reactor-client --address 127.0.0.1
 
 Follow the instructions by adding key/value pair data to send to the server, then watch it react!
+
+For more information on configuration, take a look at the wiki.
 
 == Contributing
 
