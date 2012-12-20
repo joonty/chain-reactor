@@ -50,13 +50,13 @@ class TestChainReactorStart < Test::Unit::TestCase
   end
 
   def test_start_daemon_and_communicate_with_client
-    _, stdout, _, _ = start_chain_reactor('')
+    _, stdout, stderr, _ = start_chain_reactor('')
     output = stdout.read
     assert_match(/Daemon has started successfully/,output)
 
     assert_nothing_raised ChainReactor::ClientError do
       $stdout = File.new('/dev/null','w')
-      client = ChainReactor::Client.new('127.0.0.1',20000)
+      client = ChainReactor::Client.new('127.0.0.1',1987)
       client.send_as_json({:hello => :world})
     end
   end
@@ -80,7 +80,7 @@ class TestChainReactorStart < Test::Unit::TestCase
 
     assert_nothing_raised ChainReactor::ClientError do
       $stdout = File.new('/dev/null','w')
-      client = ChainReactor::Client.new('0.0.0.0',20000)
+      client = ChainReactor::Client.new('0.0.0.0',1987)
       client.send({:hello => :world})
     end
   end

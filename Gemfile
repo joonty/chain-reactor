@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake'
+gem 'main'
 
 gem 'json'
 gem 'mocha'
