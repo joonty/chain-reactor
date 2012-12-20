@@ -13,10 +13,6 @@ module ChainReactor
       @log = log
       # log to STDOUT/ERR while parsing the chain file, only daemonize when complete.
       @reactor = ChainfileParser.new(@config.chainfile,@config,@log).parse
-      if not @config.on_top? and RUBY_PLATFORM == 'java'
-        @log.warn { "fork() is not implemented in JRuby, chain-reactor will run on top instead of daemonizing" }
-        @config.on_top = true
-      end
 
     end
 
@@ -24,6 +20,11 @@ module ChainReactor
     #
     # Uses dante as the daemonizer.
     def start
+      if not @config.on_top? and RUBY_PLATFORM == 'java'
+        @log.warn { "fork() is not implemented in JRuby, chain-reactor will run on top instead of daemonizing" }
+        @config.on_top = true
+      end
+
       # Change output format for logging to file if daemonizing
       unless @config.on_top?
         @log.outputters.first.formatter = ChainReactor::PatternFormatter.new(:pattern => "[%l] %d :: %m")
