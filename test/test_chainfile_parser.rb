@@ -50,7 +50,7 @@ class TestChainfileParser < Test::Unit::TestCase
 
   def test_single_reaction_with_options_is_added_to_reactor
     chain = <<-chain
-    react_to('192.168.0.1', parser: :dummy, required_keys: [:hello,:world]) { |data| puts data.inspect }
+    react_to('192.168.0.1', :parser => :dummy, :required_keys => [:hello,:world]) { |data| puts data.inspect }
     chain
 
     parser = ChainReactor::ChainfileParser.new(File.new(chain),

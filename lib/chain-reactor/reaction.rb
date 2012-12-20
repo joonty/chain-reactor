@@ -24,7 +24,7 @@ module ChainReactor
     attr_accessor :options
 
     # Create a new reaction, with the options and code block to run.
-    def initialize(options = {},block,logger)
+    def initialize(options,block,logger)
       @options = { :parser => :json, :required_keys => [], :keys_to_sym => true }.merge(options)
       @block = block
       @log = logger

@@ -14,6 +14,12 @@ module ChainReactor
       end
     end
 
+    # KeyError doesn't exist in ruby 1.8
+    if !defined? ::KeyError
+      class ::KeyError < ::IndexError
+      end
+    end
+
     class Params
       def initialize(hash_data)
         @hash = hash_data
@@ -26,7 +32,7 @@ module ChainReactor
       def fetch(key,&block)
         begin
           @hash.fetch(key,&block)
-        rescue KeyError => e
+        rescue ::KeyError,::IndexError => e
           raise ::Main::Parameter::NoneSuch, key
         end
       end

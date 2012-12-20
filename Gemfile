@@ -1,18 +1,18 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in chain-reactor.gemspec
 gemspec
 
-gem 'rake'
-gem 'main'
+gem 'rake', '~> 0.8.7'
+gem 'main', '~> 5.1.1'
+gem 'json', '~> 1.7.5'
+gem 'dante', '~> 0.1.5'
+gem 'log4r', '~> 1.1.10'
+gem 'rdoc', '~> 3.12'
 
-gem 'json'
-gem 'mocha'
-gem 'dante'
-gem 'log4r'
-
-gem 'xml-simple', :require => false
+gem 'xml-simple', '~> 1.1.2', :require => false
 
 group :test do
-  gem 'sys-proctable'
+  gem 'test-unit', '~> 2.5.3'
+  gem 'mocha', '~> 0.13.1'
+  gem 'sys-proctable', '~> 0.9.2'
 end

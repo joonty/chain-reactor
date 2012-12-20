@@ -17,7 +17,13 @@ class TestChainReactorStart < Test::Unit::TestCase
 
   def teardown
     _,_,_,t = stop_chain_reactor
-    t.value
+    if t.nil?
+      # Ruby 1.8
+      sleep 2
+    else
+      # Ruby 1.9+
+      t.value
+    end
     
     $stdout = STDOUT
   end
@@ -31,6 +37,10 @@ class TestChainReactorStart < Test::Unit::TestCase
   end
 
   def test_start_daemon
+    if RUBY_VERSION.to_f < 1.9
+      # Thread is not available
+      return
+    end
     _, stdout, _, thread = start_chain_reactor('')
     output = stdout.read
 
@@ -84,5 +94,6 @@ class TestChainReactorStart < Test::Unit::TestCase
       client.send({:hello => :world})
     end
   end
+  
 end
 
