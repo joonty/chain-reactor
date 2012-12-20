@@ -47,6 +47,9 @@ class TestChainReactorStart < Test::Unit::TestCase
       assert_match(/Starting daemon, PID file => #{@pid_path}/,output)
       assert_match(/Daemon has started successfully/,output)
 
+      # Wait for thread to exit
+      thread.value
+
       # Thread stopped as it's daemonized
       assert_equal true, thread.stop?
 
