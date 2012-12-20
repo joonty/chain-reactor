@@ -13,6 +13,10 @@ module ChainReactor
       @log = log
       # log to STDOUT/ERR while parsing the chain file, only daemonize when complete.
       @reactor = ChainfileParser.new(@config.chainfile,@config,@log).parse
+      if not @config.on_top? and RUBY_PLATFORM == 'java'
+        @log.warn { "fork() is not implemented in JRuby, chain-reactor will run on top instead of daemonizing" }
+        @config.on_top = true
+      end
 
     end
 

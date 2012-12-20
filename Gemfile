@@ -14,5 +14,4 @@ gem 'xml-simple', '~> 1.1.2', :require => false
 group :test do
   gem 'test-unit', '~> 2.5.3'
   gem 'mocha', '~> 0.13.1'
-  gem 'sys-proctable', '~> 0.9.2'
 end
