@@ -1,6 +1,7 @@
 = Chain Reactor
 
 {<img src="https://travis-ci.org/joonty/chain-reactor.png?branch=master" alt="Build Status" />}[https://travis-ci.org/joonty/chain-reactor]
+{<img src="https://codeclimate.com/badge.png" />}[https://codeclimate.com/github/joonty/chain-reactor]
 
 Chain Reactor is a simple server that waits for incoming connections, then kicks off some code when one is made. Clients are locked down by IP address, so you will only recieve connections from known clients. Also, data can be passed via JSON, XML, or anything you like.
 
