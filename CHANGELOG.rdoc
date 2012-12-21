@@ -1,0 +1,10 @@
+== 0.2.1
+
+* bug fixes
+  * Refactored tests to work with JRuby, Rubinius and Ruby MRI 1.8.7
+  * Removed sys-proctable gem to use system's `ps` instead (tests only)
+
+== 0.2.0
+
+* important changes
+  * First release as a gem
