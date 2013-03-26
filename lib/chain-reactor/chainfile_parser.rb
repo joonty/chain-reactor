@@ -64,12 +64,12 @@ module ChainReactor
 
     # Set the pid file path.
     def pidfile(pidfile)
-      @config.pidfile = pidfile
+      @config.pid_file = pidfile
     end
     #
     # Set the log file path.
     def logfile(logfile)
-      @config.logfile = logfile
+      @config.log_file = logfile
     end
 
     # Set whether to run multithreaded.
